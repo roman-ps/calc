@@ -1,6 +1,6 @@
 "use strict";
 // коды всех клавиш, используемых в калькуляторе
-const KEYCODE = {
+const KEY_CODES = {
   Digit0: 48,
   Digit1: 49,
   Digit2: 50,
@@ -34,7 +34,7 @@ const KEYCODE = {
   NumpadEnter: 13,
 };
 
-const BTNS = {
+const BTNS_VALUE = {
   btn0: "0",
   btn1: "1",
   btn2: "2",
@@ -60,14 +60,14 @@ OUTPUT_FIELD.textContent = outputResult; // вывод результата в �
 
 // обработка нажатий клавиш
 function handleKeys(evt) {
-  if (KEYCODE.hasOwnProperty(evt.code)) {
+  if (KEY_CODES.hasOwnProperty(evt.code)) {
     // если код нажатой клавиши есть в объекте KEYCODE
     switch (evt.code) {
       case "Backspace":
-        deleteLastSymbol();
+        deleteSymbols(-1);
         break;
       case "Escape":
-        resetOutput();
+        deleteSymbols(0);
         break;
       case "Equal":
       case "Enter":
@@ -81,17 +81,27 @@ function handleKeys(evt) {
   }
 }
 
-// удаляем последний символ
-function deleteLastSymbol() {
-  outputResult = outputResult.slice(0, -1);
+/* function resultOutput() {
+  OUTPUT_FIELD.textContent = outputResult;
+} */
+
+// удаляем символы
+function deleteSymbols(x) {
+  outputResult = outputResult.slice(0, x);
   OUTPUT_FIELD.textContent = outputResult;
 }
 
-// очищаем поле вывода
-function resetOutput() {
-  outputResult = "";
+// удаляем последний символ
+/* function deleteLastSymbol() {
+  outputResult = outputResult.slice(0, -1);
   OUTPUT_FIELD.textContent = outputResult;
-}
+} */
+
+// очищаем поле вывода
+/* function resetOutput() {
+  outputResult = outputResult.slice(0, 0);
+  OUTPUT_FIELD.textContent = outputResult;
+} */
 
 // вывод результатов
 function renderCalc() {
@@ -99,37 +109,60 @@ function renderCalc() {
   OUTPUT_FIELD.textContent = outputResult;
 }
 
-// выбираем клики
-function toggleClick(x) {
-  switch (x) {
-    case "btnBack":
-      deleteLastSymbol();
-      break;
-    case "btnReset":
-      resetOutput();
-      break;
-    case "btnEqually":
-      renderCalc();
-      break;
-    default:
-      outputResult += BTNS[x];
-      OUTPUT_FIELD.textContent = outputResult;
+// обработка кликов мыши
+function handleClick(evt) {
+  //let btnValue = evt.target.textContent;
+  let target = evt.target;
+  let dataId = evt.target.dataset.id;
+  //console.log(btnValue);
+  //console.log(target);
+  if (target.classList.contains("btn")) {
+    switch (dataId) {
+      case "btnBack":
+        deleteSymbols(-1);
+        break;
+      case "btnReset":
+        deleteSymbols(0);
+        break;
+      case "btnEqually":
+        renderCalc();
+        break;
+      default:
+        outputResult += BTNS_VALUE[dataId];
+        OUTPUT_FIELD.textContent = outputResult;
+    }
   }
 }
 
 // обработка кликов мыши
-function handleClick(evt) {
-  console.log(evt.target);
-  if (evt.target.classList.contains("btn")) {
-    toggleClick(evt.target.dataset.id);
+/* function handleClick(evt) {
+  let target = evt.target;
+  let btnValue = target.textContent;
+  if (target.classList.contains("btn")) {
+    switch (btnValue) {
+      case "-1":
+        deleteLastSymbol();
+        break;
+      case "C":
+        resetOutput();
+        break;
+      case "=":
+        renderCalc();
+        break;
+      default:
+        outputResult += btnValue;
+        OUTPUT_FIELD.textContent = outputResult;
+    }
   }
-}
+} */
 
 // поиск знаков с высоким приоритетом
 function checkFirstPriority(x) {
   let reg = /(\d+)([/*])(\d+)/;
   return x.replace(reg, function (match, g1, g2, g3) {
-    return g2 == "*" ? g1 * g3 : g1 / g3;
+    return g2 == "*"
+    ? g1 * g3
+    : g1 / g3;
   });
 }
 
