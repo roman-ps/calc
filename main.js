@@ -59,10 +59,10 @@ OUTPUT_FIELD.textContent = outputResult; // вывод результата
 
 // обработка нажатий клавиш
 function handleKeys(evt) {
+  // проверяем есть ли код нажатой клавиши в KEY_CODES
   if (KEY_CODES.hasOwnProperty(evt.code)) {
-    // если код нажатой клавиши есть в KEY_CODES
     switch (evt.code) {
-      case KEY_CODES.Backspace: // 8
+      case KEY_CODES.Backspace:
         deleteSymbols(-1);
         break;
       case KEY_CODES.Escape:
@@ -74,15 +74,22 @@ function handleKeys(evt) {
         renderCalc();
         break;
       default:
-        outputResult += evt.key;
-        OUTPUT_FIELD.textContent = outputResult;
+        addSymbols(evt.key);
     }
   }
 }
 
-// удаляем символы, последний символ если x = -1
-function deleteSymbols(x) {
-  outputResult = outputResult.slice(0, x);
+// удаление символов
+// если number = 0 => удаляем все
+// если number = -1 => удаляем последний
+function deleteSymbols(number) {
+  outputResult = outputResult.slice(0, number);
+  OUTPUT_FIELD.textContent = outputResult;
+}
+
+// добавление символов
+function addSymbols(item) {
+  outputResult += item;
   OUTPUT_FIELD.textContent = outputResult;
 }
 
@@ -108,8 +115,7 @@ function handleClick(evt) {
         renderCalc();
         break;
       default:
-        outputResult += BTNS_VALUE[dataId];
-        OUTPUT_FIELD.textContent = outputResult;
+        addSymbols(BTNS_VALUE[dataId]);
     }
   }
 }
@@ -118,9 +124,7 @@ function handleClick(evt) {
 function checkFirstPriority(x) {
   let reg = /(\d+)([/*])(\d+)/;
   return x.replace(reg, function (match, g1, g2, g3) {
-    return g2 == "*"
-    ? g1 * g3
-    : g1 / g3;
+    return g2 == "*" ? g1 * g3 : g1 / g3;
   });
 }
 
