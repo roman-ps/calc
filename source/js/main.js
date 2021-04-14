@@ -1,56 +1,5 @@
-"use strict";
-
-// коды клавиш
-const KEY_CODES = {
-  Digit0: "0",
-  Digit1: "1",
-  Digit2: "2",
-  Digit3: "3",
-  Digit4: "4",
-  Digit5: "5",
-  Digit6: "6",
-  Digit7: "7",
-  Digit8: "8",
-  Digit9: "9",
-  Numpad0: "0",
-  Numpad1: "1",
-  Numpad2: "2",
-  Numpad3: "3",
-  Numpad4: "4",
-  Numpad5: "5",
-  Numpad6: "6",
-  Numpad7: "7",
-  Numpad8: "8",
-  Numpad9: "9",
-  Minus: "-",
-  NumpadMultiply: "*",
-  NumpadSubtract: "-",
-  NumpadAdd: "+",
-  NumpadDivide: "/",
-  NumpadEnter: "NumpadEnter",
-  Escape: "Escape",
-  Backspace: "Backspace",
-  Enter: "Enter",
-  Equal: "Equal",
-};
-
-const BTNS_VALUE = {
-  btn0: "0",
-  btn1: "1",
-  btn2: "2",
-  btn3: "3",
-  btn4: "4",
-  btn5: "5",
-  btn6: "6",
-  btn7: "7",
-  btn8: "8",
-  btn9: "9",
-  btnEqually: "=",
-  btnPlus: "+",
-  btnMinus: "-",
-  btnMulti: "*",
-  btnSplit: "/",
-};
+import {checkFirstPriority, checkSecondPriority} from './utils.js';
+import {KEY_CODES, BTNS_VALUE} from './consts.js'
 
 const OUTPUT_FIELD = document.querySelector(".result"); // поле вывода результата
 const WRAPPER = document.querySelector(".wrapper"); // обертка
@@ -77,7 +26,7 @@ function handleKeys(evt) {
         addSymbols(evt.key);
     }
   }
-}
+};
 
 // удаление символов
 // если number = 0 => удаляем все
@@ -85,19 +34,19 @@ function handleKeys(evt) {
 function deleteSymbols(number) {
   outputResult = outputResult.slice(0, number);
   OUTPUT_FIELD.textContent = outputResult;
-}
+};
 
 // добавление символов
 function addSymbols(item) {
   outputResult += item;
   OUTPUT_FIELD.textContent = outputResult;
-}
+};
 
 // вывод результатов
 function renderCalc() {
   outputResult = calculation(outputResult);
   OUTPUT_FIELD.textContent = outputResult;
-}
+};
 
 // обработка кликов мыши
 function handleClick(evt) {
@@ -118,25 +67,7 @@ function handleClick(evt) {
         addSymbols(BTNS_VALUE[dataId]);
     }
   }
-}
-
-// поиск знаков с высоким приоритетом
-function checkFirstPriority(x) {
-  let reg = /(\d+)([/*])(\d+)/;
-  return x.replace(reg, function (match, g1, g2, g3) {
-    return g2 == "*" ? g1 * g3 : g1 / g3;
-  });
-}
-
-// поиск знаков с низким приоритетом
-function checkSecondPriority(x) {
-  let reg = /(\d+)([-+])(\d+)/;
-  return x.replace(reg, function (match, g1, g2, g3) {
-    return g2 == "+"
-      ? parseInt(g1) + parseInt(g3)
-      : parseInt(g1) - parseInt(g3);
-  });
-}
+};
 
 // вычисление результата
 function calculation(x) {
@@ -150,7 +81,7 @@ function calculation(x) {
     c = checkSecondPriority(c);
   }
   return c;
-}
+};
 
 window.addEventListener("keydown", handleKeys);
 WRAPPER.addEventListener("click", handleClick);
